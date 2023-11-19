@@ -8,14 +8,25 @@
 import Foundation
 import SwiftUI
 
+extension Double {
+    func toRadians() -> Double {
+        return self * Double.pi / 180
+    }
+    func toCGFloat() -> CGFloat {
+        return CGFloat(self)
+    }
+}
+
 struct ActivityRingShapeModel: Shape {
+    // Helper function to convert percent values to angles in degrees
+    static func percentToAngle(percent: Double, startAngle: Double) -> Double {
+        (percent / 100 * 360) + startAngle
+    }
+    private var percent: Double
+    private var startAngle: Double
+    private let drawnClockwise: Bool
     
-    //parameters to set up the ring
-    var percent: Double
-    let startAngle: Double
-    
-    //the things that will have animations and how to define them
-    typealias animatableData = Double
+    // This allows animations to run smoothly for percent values
     var animatableData: Double {
         get {
             return percent
@@ -25,36 +36,22 @@ struct ActivityRingShapeModel: Shape {
         }
     }
     
-    //it's important to initialize percent as max and start angle at -90 to make it start on top
-    init(
-        percent: Double = 100,
-        startAngle: Double = -90
-    ) {
+    init(percent: Double = 100, startAngle: Double = -90, drawnClockwise: Bool = false) {
         self.percent = percent
         self.startAngle = startAngle
+        self.drawnClockwise = drawnClockwise
     }
     
-    //this function is to convert the from a percentage to an angle, since it's important to work with percentage, so we can always define where things are
-    static func percentToAngle(percent: Double, startAngle: Double) -> Double {
-        return (percent / 100 * 360) + startAngle
-    }
-    
-    //path is one of the main functions that define the activity ring
+    // This draws a simple arc from the start angle to the end angle
     func path(in rect: CGRect) -> Path {
-        
         let width = rect.width
         let height = rect.height
-        let radius = min(height, width) / 2
+        let radius = min(width, height) / 2
         let center = CGPoint(x: width / 2, y: height / 2)
-        let endAngle = Self.percentToAngle(percent: percent, startAngle: startAngle)
-        
+        let endAngle = Angle(degrees: ActivityRingShapeModel.percentToAngle(percent: self.percent, startAngle: self.startAngle))
         return Path { path in
-            path.addArc(
-                center: center,
-                radius: radius,
-                startAngle: Angle(degrees: startAngle),
-                endAngle: Angle(degrees: endAngle),
-                clockwise: false)
+            path.addArc(center: center, radius: radius, startAngle: Angle(degrees: startAngle), endAngle: endAngle, clockwise: drawnClockwise)
         }
     }
 }
+

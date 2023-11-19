@@ -28,9 +28,9 @@ struct ContentView: View {
                         .padding()
                     ZStack(alignment: .leading) {
                         Rectangle()
-                            .frame(width: .infinity, height: 200)
+                            .frame(width: 361, height: 200)
                             .clipped()
-                            .cornerRadius(20)
+                            .cornerRadius(10)
                             .padding()
                             .foregroundStyle(.gray).opacity(0.3)
                             .offset(y: -25)
@@ -38,10 +38,11 @@ struct ContentView: View {
                             Text("Move")
                                 .font(.body)
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 40)
+                                .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                Text("\(tappablePercentage1)")
+                                
+                                Text("\(Int(tappablePercentage1 * 2))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.red)
                                 Text("KCAL")
@@ -51,33 +52,33 @@ struct ContentView: View {
                                     .offset(x: -8, y: 2)
                             }
                             .padding(.horizontal, 40)
-                            .offset(x: 0, y: -85)
+                            .offset(x: -5, y: -85)
                             
                             Text("Exercise")
                                 .font(.body)
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 40)
+                                .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                Text("\(tappablePercentage2)")
+                                Text("\(Int(tappablePercentage2 / 2))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.green)
-                                Text("MIN")
+                                Text("MINS")
                                     .font(.footnote)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.green)
                                     .offset(x: -8, y: 2)
                             }
                             .padding(.horizontal, 40)
-                            .offset(x: 0, y: -85)
+                            .offset(x: -5, y: -85)
                             
                             Text("Stand")
                                 .font(.body)
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 40)
+                                .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                Text("\(tappablePercentage3)")
+                                Text("\(Int(tappablePercentage3 / 24))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.cyan)
                                 Text("HRS")
@@ -87,65 +88,69 @@ struct ContentView: View {
                                     .offset(x: -8, y: 2)
                             }
                             .padding(.horizontal, 40)
-                            .offset(x: 0, y: -85)
+                            .offset(x: -5, y: -85)
                         }
                         .offset(x: 0, y: 50)
+                        
                         ZStack {
-                            ActivityRingView(lineWidth: 19,
-                                             backgroundColor: .red.opacity(0.2),
-                                             foregroundColor: .red,
-                                             percentage: tappablePercentage1)
+                            ActivityRingViewModel(ringWidth: 19,
+                                             percent: tappablePercentage1 ,
+                                             backgroundColor: .red.opacity(0.2), foregroundColors: [.red, .red])
                             .frame(width: 130, height: 130)
                             .offset(x: 220, y: -25)
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 1.2)) {
-                                    self.tappablePercentage1 = 65
-                                }
-                            }
+                            
                             Image(systemName: "arrow.right")
-                                .offset(x: 220, y: -90)
+                                .foregroundColor(.black)
+                                .offset(x: 220, y: -80)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            ActivityRingView(lineWidth: 19,
+                            ActivityRingViewModel(ringWidth: 19,
+                                             percent: tappablePercentage2,
                                              backgroundColor: .green.opacity(0.2),
-                                             foregroundColor: .green,
-                                             percentage: tappablePercentage2)
+                                             foregroundColors: [.green, .green])
                             .frame(width: 90, height: 90)
                             .offset(x: 220, y: -25)
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 1.2)) {
-                                    self.tappablePercentage2 = 90
-                                }
-                            }
+                            
+                            
                             Image(systemName: "arrow.right")
-                                .offset(x: 220, y: -68)
+                                .foregroundColor(.black)
+                                .offset(x: 217, y: -60)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             Image(systemName: "arrow.right")
-                                .offset(x: 224, y: -68)
+                                .foregroundColor(.black)
+                                .offset(x: 221, y: -60)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            ActivityRingView(lineWidth: 19,
+                            ActivityRingViewModel(ringWidth: 19,
+                                             percent: tappablePercentage3,
                                              backgroundColor: .cyan.opacity(0.2),
-                                             foregroundColor: .cyan,
-                                             percentage: tappablePercentage3)
+                                             foregroundColors: [.cyan, .cyan] )
                             .frame(width: 50, height: 50)
                             .offset(x: 220, y: -25)
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 1.2)) {
-                                    self.tappablePercentage3 = 35
-                                }
-                            }
+                            
                             Image(systemName: "arrow.up")
-                                .offset(x: 220, y: -48)
+                                .foregroundColor(.black)
+                                .offset(x: 220, y: -40)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                         }
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 1.2)) {
+                                self.tappablePercentage1 = 160
+                                self.tappablePercentage2 = 280
+                                self.tappablePercentage3 = 140
+                            }
+                        }
                     }
+                    
                 }
+                
             }
+            
+            .navigationTitle("Summary")
             .toolbar{
                 ToolbarItemGroup(placement: .topBarLeading) {
                     Text("TUESDAY, 14 NOV")
@@ -154,17 +159,17 @@ struct ContentView: View {
                         .foregroundColor(.gray)
                 }
             }
-            .navigationTitle("Summary")
             .overlay(
                 Image(systemName: "person.circle.fill")
                     .foregroundStyle(.white)
-                
                     .imageScale(.large)
                     .padding(.trailing, 20)
                     .offset(x: 0, y: -35), alignment: .topTrailing
             )
+            
             .background(.black)
         }
+        
     }
     init() {
         // Large Navigation Title
