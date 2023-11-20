@@ -57,10 +57,13 @@ struct ActivityRingViewModel: View {
                 ActivityRingShapeModel()
                     .stroke(style: StrokeStyle(lineWidth: self.ringWidth))
                     .fill(self.backgroundColor)
+                    
                 // Foreground
                 ActivityRingShapeModel(percent: self.percent, startAngle: self.startAngle)
                     .stroke(style: StrokeStyle(lineWidth: self.ringWidth, lineCap: .round))
                     .fill(self.ringGradient)
+                    .shadow(radius: 100)
+
                 // End of ring with drop shadow
                 if self.getShowShadow(frame: geometry.size) {
                     Circle()

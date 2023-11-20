@@ -8,17 +8,19 @@
 import Foundation
 import SwiftUI
 
+//to tell SwiftUI how to calculate radians
 extension Double {
     func toRadians() -> Double {
         return self * Double.pi / 180
     }
+    //and CoreGraphics Float
     func toCGFloat() -> CGFloat {
         return CGFloat(self)
     }
 }
 
 struct ActivityRingShapeModel: Shape {
-    // Helper function to convert percent values to angles in degrees
+    //function to convert percent values to angles in degrees so that it is possible to understand where we are on the ring
     static func percentToAngle(percent: Double, startAngle: Double) -> Double {
         (percent / 100 * 360) + startAngle
     }
@@ -26,7 +28,7 @@ struct ActivityRingShapeModel: Shape {
     private var startAngle: Double
     private let drawnClockwise: Bool
     
-    // This allows animations to run smoothly for percent values
+    //this allows animations to run smoothly for percent values
     var animatableData: Double {
         get {
             return percent
@@ -36,6 +38,7 @@ struct ActivityRingShapeModel: Shape {
         }
     }
     
+    //classic init, nothing oblivious to see here :D
     init(percent: Double = 100, startAngle: Double = -90, drawnClockwise: Bool = false) {
         self.percent = percent
         self.startAngle = startAngle
@@ -49,9 +52,13 @@ struct ActivityRingShapeModel: Shape {
         let radius = min(width, height) / 2
         let center = CGPoint(x: width / 2, y: height / 2)
         let endAngle = Angle(degrees: ActivityRingShapeModel.percentToAngle(percent: self.percent, startAngle: self.startAngle))
+        
         return Path { path in
-            path.addArc(center: center, radius: radius, startAngle: Angle(degrees: startAngle), endAngle: endAngle, clockwise: drawnClockwise)
+            path.addArc(center: center, radius: radius, startAngle: .degrees(startAngle), endAngle: endAngle, clockwise: drawnClockwise)
+            
         }
+        //.fill(Color.black)
+        //.shadow(radius: 10)
     }
 }
 

@@ -12,10 +12,10 @@ struct ContentView: View {
     
     //    @Environment(\.modelContext) private var modelContext
     //    @Query private var items: [Item]
-    @State var tappablePercentage1: Double = 0
-    @State var tappablePercentage2: Double = 0
-    @State var tappablePercentage3: Double = 0
-
+    @State var percentage1: Double = 0
+    @State var percentage2: Double = 0
+    @State var percentage3: Double = 0
+    
     var body: some View {
         
         NavigationStack {
@@ -42,7 +42,7 @@ struct ContentView: View {
                                 .offset(x: 0, y: -80)
                             HStack {
                                 
-                                Text("\(Int(tappablePercentage1 * 2))")
+                                Text("\(Int(percentage1 * 3))/\(Int(percentage1 * 2))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.red)
                                 Text("KCAL")
@@ -60,7 +60,7 @@ struct ContentView: View {
                                 .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                Text("\(Int(tappablePercentage2 / 2))")
+                                Text("\(Int(percentage2 / 2))/\(Int(percentage2 / 4))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.green)
                                 Text("MINS")
@@ -78,7 +78,7 @@ struct ContentView: View {
                                 .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                Text("\(Int(tappablePercentage3 / 24))")
+                                Text("\(Int(percentage3 / 24))/\(Int(percentage3 / 48))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.cyan)
                                 Text("HRS")
@@ -93,55 +93,48 @@ struct ContentView: View {
                         .offset(x: 0, y: 50)
                         
                         ZStack {
-                            ActivityRingViewModel(ringWidth: 19,
-                                             percent: tappablePercentage1 ,
-                                             backgroundColor: .red.opacity(0.2), foregroundColors: [.red, .red])
+                            CustomRingView(background: .red.opacity(0.3), wHeight: 130, completionRate: percentage1/100, ringThickness: 19, colorGradient: Gradient(colors: [.red, .pink]))
                             .frame(width: 130, height: 130)
                             .offset(x: 220, y: -25)
                             
+                            
                             Image(systemName: "arrow.right")
                                 .foregroundColor(.black)
-                                .offset(x: 220, y: -80)
+                                .offset(x: 220, y: -90)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            ActivityRingViewModel(ringWidth: 19,
-                                             percent: tappablePercentage2,
-                                             backgroundColor: .green.opacity(0.2),
-                                             foregroundColors: [.green, .green])
+                            CustomRingView(background: .green.opacity(0.2), wHeight: 90, completionRate: percentage2/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .green]))
                             .frame(width: 90, height: 90)
                             .offset(x: 220, y: -25)
                             
                             
                             Image(systemName: "arrow.right")
                                 .foregroundColor(.black)
-                                .offset(x: 217, y: -60)
+                                .offset(x: 217, y: -70)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             Image(systemName: "arrow.right")
                                 .foregroundColor(.black)
-                                .offset(x: 221, y: -60)
+                                .offset(x: 221, y: -70)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            ActivityRingViewModel(ringWidth: 19,
-                                             percent: tappablePercentage3,
-                                             backgroundColor: .cyan.opacity(0.2),
-                                             foregroundColors: [.cyan, .cyan] )
+                            CustomRingView(background: .cyan.opacity(0.3), wHeight: 50, completionRate: percentage3/100, ringThickness: 19, colorGradient: Gradient(colors: [.cyan, .cyan]))
                             .frame(width: 50, height: 50)
                             .offset(x: 220, y: -25)
                             
                             Image(systemName: "arrow.up")
                                 .foregroundColor(.black)
-                                .offset(x: 220, y: -40)
+                                .offset(x: 220, y: -50)
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                         }
                         .onAppear {
                             withAnimation(.easeInOut(duration: 1.2)) {
-                                self.tappablePercentage1 = 160
-                                self.tappablePercentage2 = 280
-                                self.tappablePercentage3 = 140
+                                self.percentage1 = 180
+                                self.percentage2 = 110
+                                self.percentage3 = 140
                             }
                         }
                     }
@@ -153,7 +146,7 @@ struct ContentView: View {
             .navigationTitle("Summary")
             .toolbar{
                 ToolbarItemGroup(placement: .topBarLeading) {
-                    Text("TUESDAY, 14 NOV")
+                    Text(Date.now, style: .date)
                         .font(.callout)
                         .padding(.top, 30)
                         .foregroundColor(.gray)
@@ -166,7 +159,6 @@ struct ContentView: View {
                     .padding(.trailing, 20)
                     .offset(x: 0, y: -35), alignment: .topTrailing
             )
-            
             .background(.black)
         }
         
