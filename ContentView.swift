@@ -9,16 +9,11 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+
     
-    //    @Environment(\.modelContext) private var modelContext
-    //    @Query private var items: [Item]
-    @State var percentage1: Double = 0
-    @State var percentage2: Double = 0
-    @State var percentage3: Double = 0
-    
-    @State var moveRingProgress: Double = 0.1
-    @State var exerciseRingProgress: Double = 0.1
-    @State var standRingProgress: Double = 0.1
+    @State var moveRingProgress: Double = 10
+    @State var exerciseRingProgress: Double = 10
+    @State var standRingProgress: Double = 10
 
     @State private var shouldAnimate: Bool = false
     
@@ -34,7 +29,7 @@ struct ContentView: View {
                         .padding()
                     ZStack(alignment: .leading) {
                         NavigationLink {
-                            ActivityView()
+                            ActivityView(moveRingProgress: moveRingProgress, exerciseRingProgress: exerciseRingProgress, standRingProgress: standRingProgress)
                         } label: {
                             Rectangle()
                                 .frame(width: 361, height: 200)
@@ -45,13 +40,6 @@ struct ContentView: View {
                                 .offset(y: -25)
                         }
 
-//                        Rectangle()
-//                            .frame(width: 361, height: 200)
-//                            .clipped()
-//                            .cornerRadius(10)
-//                            .padding()
-//                            .foregroundStyle(.gray).opacity(0.3)
-//                            .offset(y: -25)
                         VStack(alignment: .leading) {
                             Text("Move")
                                 .font(.body)
@@ -77,7 +65,7 @@ struct ContentView: View {
                                 .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                Text("\(Int(percentage2 / 2))/\(Int(percentage2 / 4))")
+                                Text("\(Int(exerciseRingProgress / 2))/\(Int(exerciseRingProgress / 4))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.green)
                                 Text("MINS")
@@ -95,7 +83,7 @@ struct ContentView: View {
                                 .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                Text("\(Int(percentage3 / 24))/\(Int(percentage3 / 48))")
+                                Text("\(Int(standRingProgress / 24))/\(Int(standRingProgress / 48))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.cyan)
                                 Text("HRS")
@@ -111,7 +99,6 @@ struct ContentView: View {
                         
                         ZStack {
                             CustomRingView(accessibilityText: "Move ring", background: .red.opacity(0.3), wHeight: 130, completionRate: moveRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.red, .pink]))
-                                .frame(width: 130, height: 130)
                                 .offset(x: 220, y: -25)
                             
                             Image(systemName: "arrow.right")
@@ -120,8 +107,7 @@ struct ContentView: View {
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            CustomRingView(accessibilityText: "Exercise ring", background: .green.opacity(0.2), wHeight: 90, completionRate: exerciseRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .green]))
-                                .frame(width: 90, height: 90)
+                            CustomRingView(accessibilityText: "Exercise ring", background: .green.opacity(0.2), wHeight: 90, completionRate: exerciseRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .accentColor]))
                                 .offset(x: 220, y: -25)
 
                             Image(systemName: "arrow.right")
@@ -135,8 +121,7 @@ struct ContentView: View {
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            CustomRingView(accessibilityText: "Stand ring", background: .teal.opacity(0.3), wHeight: 50, completionRate: standRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.teal, .cyan]))
-                                .frame(width: 50, height: 50)
+                            CustomRingView(accessibilityText: "Stand ring", background: .teal.opacity(0.3), wHeight: 50, completionRate: standRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.cyan, .teal]))
                                 .offset(x: 220, y: -25)
                             
                             Image(systemName: "arrow.up")
@@ -145,14 +130,6 @@ struct ContentView: View {
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                         }
-//                        .onAppear {
-//                            withAnimation(.easeInOut(duration: 1.2)) {
-//                                self.moveRingProgress
-//                                self.exerciseRingProgress
-//                                self.standRingProgress
-//                                
-//                            }
-//                        }
                     }
                 }
                 Group {
@@ -163,6 +140,13 @@ struct ContentView: View {
                     TrainerTipsView
                         .offset(y: -60)
                 }
+                .onAppear {
+                    withAnimation(.linear) {
+                        self.shouldAnimate = true
+                    }
+                }
+                .opacity(shouldAnimate ? 1 : 0.2)
+                .offset(y: shouldAnimate ? 0 : 50)
             }
             
             .navigationTitle("Summary")
@@ -176,7 +160,6 @@ struct ContentView: View {
                 
             }
             .background(.black)
-            
         }
     }
     
@@ -203,7 +186,7 @@ struct ContentView: View {
 
         }
         .padding()
-    }
+    } 
     
     var HistoryView: some View {
         
@@ -252,13 +235,6 @@ struct ContentView: View {
                 .padding(.top, -45)
             }
         }
-        .onAppear {
-            withAnimation(.linear) {
-                self.shouldAnimate = true
-            }
-        }
-        .opacity(shouldAnimate ? 1 : 0.2)
-        .offset(y: shouldAnimate ? 0 : 50)
     }
     
     var TrainerTipsView: some View {
@@ -310,13 +286,6 @@ struct ContentView: View {
                 .padding(.top, -10)
             }
         }
-        .onAppear {
-            withAnimation(.linear) {
-                self.shouldAnimate = true
-            }
-        }
-        .opacity(shouldAnimate ? 1 : 0.2)
-        .offset(y: shouldAnimate ? 0 : 50)
     }
     
     init() {

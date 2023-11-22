@@ -56,10 +56,12 @@ struct CustomRingView: View {
     
     var body: some View {
         ZStack {
-            Circle().stroke(lineWidth: 19)
+            Circle()
+                .stroke(lineWidth: ringThickness)
                 .foregroundColor(background)
                 .opacity(0.4)
-            Circle().rotation(rotationDegree)
+            Circle()
+                .rotation(rotationDegree)
                 .trim(from: 0, to: completionRate)
                 .stroke(gradientEffect, style: strokeStyle)
                 .overlay(overlayCircle)
@@ -67,6 +69,7 @@ struct CustomRingView: View {
         .accessibilityHint(Text("\(accessibilityText) \(Int(completionRate * 100)) \("percent")"))
         .accessibilitySortPriority(1)
         .frame(width: wHeight, height: wHeight)
+        
     }
     
     var overlayCircle: some View {
