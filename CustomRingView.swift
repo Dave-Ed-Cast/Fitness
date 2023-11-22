@@ -9,15 +9,14 @@ import SwiftUI
 
 struct CustomRingView: View {
     
+    @State var accessibilityText: String 
     var background: Color
     var wHeight: CGFloat
     var completionRate: Double
     var ringThickness: CGFloat
     var colorGradient: Gradient
     
-    private var rotationDegree: Angle {
-        .degrees(-90)
-    }
+    private var rotationDegree: Angle { .degrees(-90) }
     
     private var endAngle: Angle {
         .degrees(completionRate * 360 - 90)
@@ -35,9 +34,7 @@ struct CustomRingView: View {
         colorGradient.stops.indices.contains(1) ? colorGradient.stops[1].color : Color.clear
     }
     
-    private var circleShadow: Color {
-        .black.opacity(1)
-    }
+    private var circleShadow: Color { .black }
     
     private var overlayPosition: (_ width: CGFloat, _ height: CGFloat) -> CGPoint {
         return {
@@ -51,16 +48,13 @@ struct CustomRingView: View {
         }
     }
     
-    private var overlayRotation: Angle {
-        .degrees(completionRate * 360 - 90)
-    }
+    private var overlayRotation: Angle { .degrees(completionRate * 360 - 90) }
     
     private var clippedCircleRotation: Angle {
         .degrees(-90 + completionRate * 360)
     }
     
     var body: some View {
-        
         ZStack {
             Circle().stroke(lineWidth: 19)
                 .foregroundColor(background)
@@ -69,8 +63,9 @@ struct CustomRingView: View {
                 .trim(from: 0, to: completionRate)
                 .stroke(gradientEffect, style: strokeStyle)
                 .overlay(overlayCircle)
-                
         }
+        .accessibilityHint(Text("\(accessibilityText) \(Int(completionRate * 100)) \("percent")"))
+        .accessibilitySortPriority(1)
         .frame(width: wHeight, height: wHeight)
     }
     
@@ -94,5 +89,5 @@ struct CustomRingView: View {
 }
 
 #Preview {
-    CustomRingView(background: .red, wHeight: 300, completionRate: 0.7, ringThickness: 10, colorGradient: Gradient(colors: [.red, .green]))
+    CustomRingView(accessibilityText: "", background: .red, wHeight: 300, completionRate: 0.7, ringThickness: 10, colorGradient: Gradient(colors: [.red, .green]))
 }

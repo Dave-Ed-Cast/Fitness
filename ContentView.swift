@@ -16,6 +16,12 @@ struct ContentView: View {
     @State var percentage2: Double = 0
     @State var percentage3: Double = 0
     
+    @State var moveRingProgress: Double = 0.1
+    @State var exerciseRingProgress: Double = 0.1
+    @State var standRingProgress: Double = 0.1
+
+    @State private var shouldAnimate: Bool = false
+    
     var body: some View {
         
         NavigationStack {
@@ -27,13 +33,25 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .padding()
                     ZStack(alignment: .leading) {
-                        Rectangle()
-                            .frame(width: 361, height: 200)
-                            .clipped()
-                            .cornerRadius(10)
-                            .padding()
-                            .foregroundStyle(.gray).opacity(0.3)
-                            .offset(y: -25)
+                        NavigationLink {
+                            ActivityView()
+                        } label: {
+                            Rectangle()
+                                .frame(width: 361, height: 200)
+                                .clipped()
+                                .cornerRadius(10)
+                                .padding()
+                                .foregroundStyle(.gray).opacity(0.3)
+                                .offset(y: -25)
+                        }
+
+//                        Rectangle()
+//                            .frame(width: 361, height: 200)
+//                            .clipped()
+//                            .cornerRadius(10)
+//                            .padding()
+//                            .foregroundStyle(.gray).opacity(0.3)
+//                            .offset(y: -25)
                         VStack(alignment: .leading) {
                             Text("Move")
                                 .font(.body)
@@ -41,8 +59,7 @@ struct ContentView: View {
                                 .padding(.horizontal, 35)
                                 .offset(x: 0, y: -80)
                             HStack {
-                                
-                                Text("\(Int(percentage1 * 3))/\(Int(percentage1 * 2))")
+                                Text("\(Int(moveRingProgress * 3))/\(Int(moveRingProgress * 2))")
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.red)
                                 Text("KCAL")
@@ -93,10 +110,9 @@ struct ContentView: View {
                         .offset(x: 0, y: 50)
                         
                         ZStack {
-                            CustomRingView(background: .red.opacity(0.3), wHeight: 130, completionRate: percentage1/100, ringThickness: 19, colorGradient: Gradient(colors: [.red, .pink]))
-                            .frame(width: 130, height: 130)
-                            .offset(x: 220, y: -25)
-                            
+                            CustomRingView(accessibilityText: "Move ring", background: .red.opacity(0.3), wHeight: 130, completionRate: moveRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.red, .pink]))
+                                .frame(width: 130, height: 130)
+                                .offset(x: 220, y: -25)
                             
                             Image(systemName: "arrow.right")
                                 .foregroundColor(.black)
@@ -104,11 +120,10 @@ struct ContentView: View {
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            CustomRingView(background: .green.opacity(0.2), wHeight: 90, completionRate: percentage2/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .green]))
-                            .frame(width: 90, height: 90)
-                            .offset(x: 220, y: -25)
-                            
-                            
+                            CustomRingView(accessibilityText: "Exercise ring", background: .green.opacity(0.2), wHeight: 90, completionRate: exerciseRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .green]))
+                                .frame(width: 90, height: 90)
+                                .offset(x: 220, y: -25)
+
                             Image(systemName: "arrow.right")
                                 .foregroundColor(.black)
                                 .offset(x: 217, y: -70)
@@ -120,9 +135,9 @@ struct ContentView: View {
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            CustomRingView(background: .cyan.opacity(0.3), wHeight: 50, completionRate: percentage3/100, ringThickness: 19, colorGradient: Gradient(colors: [.cyan, .cyan]))
-                            .frame(width: 50, height: 50)
-                            .offset(x: 220, y: -25)
+                            CustomRingView(accessibilityText: "Stand ring", background: .teal.opacity(0.3), wHeight: 50, completionRate: standRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.teal, .cyan]))
+                                .frame(width: 50, height: 50)
+                                .offset(x: 220, y: -25)
                             
                             Image(systemName: "arrow.up")
                                 .foregroundColor(.black)
@@ -130,17 +145,24 @@ struct ContentView: View {
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                         }
-                        .onAppear {
-                            withAnimation(.easeInOut(duration: 1.2)) {
-                                self.percentage1 = 180
-                                self.percentage2 = 110
-                                self.percentage3 = 140
-                            }
-                        }
+//                        .onAppear {
+//                            withAnimation(.easeInOut(duration: 1.2)) {
+//                                self.moveRingProgress
+//                                self.exerciseRingProgress
+//                                self.standRingProgress
+//                                
+//                            }
+//                        }
                     }
-                    
                 }
-                
+                Group {
+                    SliderView
+                        .offset(y: -30)
+                    HistoryView
+                        .offset(y: -30)
+                    TrainerTipsView
+                        .offset(y: -60)
+                }
             }
             
             .navigationTitle("Summary")
@@ -151,18 +173,152 @@ struct ContentView: View {
                         .padding(.top, 30)
                         .foregroundColor(.gray)
                 }
+                
             }
-            .overlay(
-                Image(systemName: "person.circle.fill")
-                    .foregroundStyle(.white)
-                    .imageScale(.large)
-                    .padding(.trailing, 20)
-                    .offset(x: 0, y: -35), alignment: .topTrailing
-            )
             .background(.black)
+            
         }
-        
     }
+    
+    var SliderView: some View {
+        
+        VStack(alignment: .leading) {
+            Text("Move Ring")
+                .font(.title2)
+                .foregroundStyle(.white)
+            Slider(value: $moveRingProgress, in: 0...200)
+                .accessibilityValue("setting move ring to \(Int(moveRingProgress)) percent")
+
+            Text("Exercise Ring")
+                .font(.title2)
+                .foregroundStyle(.white)
+            Slider(value: $exerciseRingProgress, in: 0...200)
+                .accessibilityValue("setting exercise ring to \(Int(exerciseRingProgress)) percent")
+
+            Text("Stand Ring")
+                .font(.title2)
+                .foregroundStyle(.white)
+            Slider(value: $standRingProgress, in: 0...200)
+                .accessibilityValue("setting stand ring to \(Int(standRingProgress)) percent")
+
+        }
+        .padding()
+    }
+    
+    var HistoryView: some View {
+        
+        VStack (alignment: .leading) {
+            Text("History")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .padding()
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .frame(width: 361, height: 80)
+                    .clipped()
+                    .cornerRadius(10)
+                    .padding()
+                    .foregroundStyle(.gray).opacity(0.3)
+                    .offset(y: -25)
+                Circle()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.green.opacity(0.2))
+                    .padding(.horizontal, 35)
+                    .padding(.bottom, 50)
+                Image(systemName: "figure.hiking")
+                    .resizable()
+                    .frame(width: 15, height: 25)
+                    .padding(.horizontal, 53)
+                    .padding(.bottom, 50)
+                    .foregroundColor(.green)
+                VStack(alignment: .leading){
+                    Text("Hiking")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                    HStack {
+                        Text("1.70")
+                        Text("MI")
+                            .offset(x: -8, y: 1)
+                            .fontWeight(.semibold)
+                            .font(.subheadline)
+                    }
+                    .font(.headline)
+                    .foregroundStyle(.green)
+                }
+                .padding()
+                .padding(.horizontal, 90)
+                .padding(.top, -45)
+            }
+        }
+        .onAppear {
+            withAnimation(.linear) {
+                self.shouldAnimate = true
+            }
+        }
+        .opacity(shouldAnimate ? 1 : 0.2)
+        .offset(y: shouldAnimate ? 0 : 50)
+    }
+    
+    var TrainerTipsView: some View {
+        
+        VStack (alignment: .leading) {
+            Text("Trainer Tips")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .padding()
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .frame(width: 361, height: 120)
+                    .clipped()
+                    .cornerRadius(10)
+                    .padding()
+                    .foregroundStyle(.gray).opacity(0.3)
+                    .offset(y: -25)
+                Circle()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.gray.opacity(0.2))
+                    .padding(.horizontal, 35)
+                    .padding(.bottom, 90)
+                Image(systemName: "figure.water.fitness")
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                    .padding(.horizontal, 46)
+                    .padding(.bottom, 88)
+                    .foregroundColor(.white)
+                VStack(alignment: .leading){
+                    Text("How to set up for warrior 1 in yoga")
+                        .multilineTextAlignment(.leading)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                    Text("With Fitness+")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                    Spacer()
+
+                    Text("Watch this week's tip")
+                        .fontWeight(.semibold)
+                        .font(.subheadline)
+                        .foregroundStyle(.green)
+                        .offset(y: -35)
+                }
+                .padding()
+                .padding(.horizontal, 90)
+                .padding(.top, -10)
+            }
+        }
+        .onAppear {
+            withAnimation(.linear) {
+                self.shouldAnimate = true
+            }
+        }
+        .opacity(shouldAnimate ? 1 : 0.2)
+        .offset(y: shouldAnimate ? 0 : 50)
+    }
+    
     init() {
         // Large Navigation Title
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
