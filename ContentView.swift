@@ -15,19 +15,27 @@ struct ContentView: View {
     @State var exerciseRingProgress: Double = 10
     @State var standRingProgress: Double = 10
 
+    @State private var animateExerciseRingImage: Bool = false
     @State private var shouldAnimate: Bool = false
+    
+    
+//    @Environment(\.)
     
     var body: some View {
         
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
+                    Color.black
+                        .ignoresSafeArea(.all)
                     Text("Activity")
                         .font(.title3)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding()
                     ZStack(alignment: .leading) {
+                        Color.black
+                            .ignoresSafeArea(.all)
                         NavigationLink {
                             ActivityView(moveRingProgress: moveRingProgress, exerciseRingProgress: exerciseRingProgress, standRingProgress: standRingProgress)
                         } label: {
@@ -107,20 +115,20 @@ struct ContentView: View {
                                 .dynamicTypeSize(.xSmall)
                                 .fontWeight(.bold)
                             
-                            CustomRingView(accessibilityText: "Exercise ring", background: .green.opacity(0.2), wHeight: 90, completionRate: exerciseRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .accentColor]))
+                            CustomRingView(accessibilityText: "Exercise ring", background: .green.opacity(0.3), wHeight: 90, completionRate: exerciseRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .accentColor]))
                                 .offset(x: 220, y: -25)
 
-                            Image(systemName: "arrow.right")
-                                .foregroundColor(.black)
-                                .offset(x: 217, y: -70)
-                                .dynamicTypeSize(.xSmall)
-                                .fontWeight(.bold)
-                            Image(systemName: "arrow.right")
-                                .foregroundColor(.black)
-                                .offset(x: 221, y: -70)
-                                .dynamicTypeSize(.xSmall)
-                                .fontWeight(.bold)
-                            
+                                Image(systemName: "arrow.right")
+                                    .foregroundColor(.black)
+                                    .offset(x: 217, y: -70)
+                                    .dynamicTypeSize(.xSmall)
+                                    .fontWeight(.bold)
+                                Image(systemName: "arrow.right")
+                                    .foregroundColor(.black)
+                                    .offset(x: 221, y: -70)
+                                    .dynamicTypeSize(.xSmall)
+                                    .fontWeight(.bold)
+                                    
                             CustomRingView(accessibilityText: "Stand ring", background: .teal.opacity(0.3), wHeight: 50, completionRate: standRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.cyan, .teal]))
                                 .offset(x: 220, y: -25)
                             
@@ -147,20 +155,22 @@ struct ContentView: View {
                 }
                 .opacity(shouldAnimate ? 1 : 0.2)
                 .offset(y: shouldAnimate ? 0 : 50)
+                Text(Date.now, style: .date)
+                    .font(.callout)
+                    .padding(.top, 30)
+                    .foregroundColor(.gray)
+                    .offset(x: -108, y: -1100)
             }
-            
             .navigationTitle("Summary")
-            .toolbar{
-                ToolbarItemGroup(placement: .topBarLeading) {
-                    Text(Date.now, style: .date)
-                        .font(.callout)
-                        .padding(.top, 30)
-                        .foregroundColor(.gray)
-                }
-                
-            }
+//            .toolbar{
+//                ToolbarItemGroup(placement: .topBarLeading) {
+//                    
+//                }
+//            }
+            
             .background(.black)
         }
+        
     }
     
     var SliderView: some View {
@@ -170,20 +180,19 @@ struct ContentView: View {
                 .font(.title2)
                 .foregroundStyle(.white)
             Slider(value: $moveRingProgress, in: 0...200)
-                .accessibilityValue("setting move ring to \(Int(moveRingProgress)) percent")
+                .accessibilityValue("Slider setting move ring to \(Int(moveRingProgress)) percent")
 
             Text("Exercise Ring")
                 .font(.title2)
                 .foregroundStyle(.white)
             Slider(value: $exerciseRingProgress, in: 0...200)
-                .accessibilityValue("setting exercise ring to \(Int(exerciseRingProgress)) percent")
+                .accessibilityValue("Slider setting exercise ring to \(Int(exerciseRingProgress)) percent")
 
             Text("Stand Ring")
                 .font(.title2)
                 .foregroundStyle(.white)
             Slider(value: $standRingProgress, in: 0...200)
-                .accessibilityValue("setting stand ring to \(Int(standRingProgress)) percent")
-
+                .accessibilityValue("Slider setting stand ring to \(Int(standRingProgress)) percent")
         }
         .padding()
     } 
