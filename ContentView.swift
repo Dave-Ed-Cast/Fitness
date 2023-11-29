@@ -18,9 +18,6 @@ struct ContentView: View {
     @State private var animateExerciseRingImage: Bool = false
     @State private var shouldAnimate: Bool = false
     
-    
-//    @Environment(\.)
-    
     var body: some View {
         
         NavigationStack {
@@ -75,11 +72,11 @@ struct ContentView: View {
                             HStack {
                                 Text("\(Int(exerciseRingProgress / 2))/\(Int(exerciseRingProgress / 4))")
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(.green)
+                                    .foregroundStyle(Color.accentColor)
                                 Text("MINS")
                                     .font(.footnote)
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(.green)
+                                    .foregroundStyle(Color.accentColor)
                                     .offset(x: -8, y: 2)
                             }
                             .padding(.horizontal, 40)
