@@ -30,128 +30,24 @@ struct ContentView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding()
-                    ZStack(alignment: .leading) {
-                        Color.black
-                            .ignoresSafeArea(.all)
-                        NavigationLink {
-                            ActivityView(moveRingProgress: moveRingProgress, exerciseRingProgress: exerciseRingProgress, standRingProgress: standRingProgress)
-                        } label: {
-                            Rectangle()
-                                .frame(width: 361, height: 200)
-                                .clipped()
-                                .cornerRadius(10)
-                                .padding()
-                                .foregroundStyle(.gray).opacity(0.3)
-                                .offset(y: -25)
-                        }
-
-                        VStack(alignment: .leading) {
-                            Text("Move")
-                                .font(.body)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 35)
-                                .offset(x: 0, y: -80)
-                            HStack {
-                                Text("\(Int(moveRingProgress * 3))/\(Int(moveRingProgress * 2))")
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.red)
-                                Text("KCAL")
-                                    .font(.footnote)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.red)
-                                    .offset(x: -8, y: 2)
-                            }
-                            .padding(.horizontal, 40)
-                            .offset(x: -5, y: -85)
+                    Group {
+                        ZStack(alignment: .leading) {
+                            ButtonView
+                            SomeView
+                            ActivityRingsView
                             
-                            Text("Exercise")
-                                .font(.body)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 35)
-                                .offset(x: 0, y: -80)
-                            HStack {
-                                Text("\(Int(exerciseRingProgress / 2))/\(Int(exerciseRingProgress / 4))")
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(Color.accentColor)
-                                Text("MINS")
-                                    .font(.footnote)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(Color.accentColor)
-                                    .offset(x: -8, y: 2)
-                            }
-                            .padding(.horizontal, 40)
-                            .offset(x: -5, y: -85)
-                            
-                            Text("Stand")
-                                .font(.body)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 35)
-                                .offset(x: 0, y: -80)
-                            HStack {
-                                Text("\(Int(standRingProgress / 24))/\(Int(standRingProgress / 48))")
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.cyan)
-                                Text("HRS")
-                                    .font(.footnote)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.cyan)
-                                    .offset(x: -8, y: 2)
-                            }
-                            .padding(.horizontal, 40)
-                            .offset(x: -5, y: -85)
-                        }
-                        .offset(x: 0, y: 50)
-                        
-                        ZStack {
-                            CustomRingView(accessibilityText: "Move ring", background: .red.opacity(0.3), wHeight: 130, completionRate: moveRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.red, .pink]))
-                                .offset(x: 220, y: -25)
-                            
-                            Image(systemName: "arrow.right")
-                                .foregroundColor(.black)
-                                .offset(x: 220, y: -90)
-                                .dynamicTypeSize(.xSmall)
-                                .fontWeight(.bold)
-                            
-                            CustomRingView(accessibilityText: "Exercise ring", background: .green.opacity(0.3), wHeight: 90, completionRate: exerciseRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .accentColor]))
-                                .offset(x: 220, y: -25)
-
-                                Image(systemName: "arrow.right")
-                                    .foregroundColor(.black)
-                                    .offset(x: 217, y: -70)
-                                    .dynamicTypeSize(.xSmall)
-                                    .fontWeight(.bold)
-                                Image(systemName: "arrow.right")
-                                    .foregroundColor(.black)
-                                    .offset(x: 221, y: -70)
-                                    .dynamicTypeSize(.xSmall)
-                                    .fontWeight(.bold)
-                                    
-                            CustomRingView(accessibilityText: "Stand ring", background: .teal.opacity(0.3), wHeight: 50, completionRate: standRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.cyan, .teal]))
-                                .offset(x: 220, y: -25)
-                            
-                            Image(systemName: "arrow.up")
-                                .foregroundColor(.black)
-                                .offset(x: 220, y: -50)
-                                .dynamicTypeSize(.xSmall)
-                                .fontWeight(.bold)
                         }
                     }
+                    ContainerView
+                        .onAppear {
+                            withAnimation(.linear) {
+                                self.shouldAnimate = true
+                            }
+                        }
+                        .opacity(shouldAnimate ? 1 : 0.2)
+                        .offset(y: shouldAnimate ? 0 : 50)
                 }
-                Group {
-                    SliderView
-                        .offset(y: -30)
-                    HistoryView
-                        .offset(y: -30)
-                    TrainerTipsView
-                        .offset(y: -60)
-                }
-                .onAppear {
-                    withAnimation(.linear) {
-                        self.shouldAnimate = true
-                    }
-                }
-                .opacity(shouldAnimate ? 1 : 0.2)
-                .offset(y: shouldAnimate ? 0 : 50)
+                
                 Text(Date.now, style: .date)
                     .font(.callout)
                     .padding(.top, 30)
@@ -164,10 +60,130 @@ struct ContentView: View {
 //                    
 //                }
 //            }
-            
             .background(.black)
         }
+    }
+    
+    var ContainerView: some View {
         
+        Group {
+            SliderView
+                .offset(y: -30)
+            HistoryView
+                .offset(y: -30)
+            TrainerTipsView
+                .offset(y: -60)
+        }
+    }
+    
+    var ActivityRingsView: some View {
+        ZStack {
+            CustomRingView(accessibilityText: "Move ring", background: .red.opacity(0.3), wHeight: 130, completionRate: moveRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.red, .pink]))
+                .offset(x: 220, y: -25)
+            
+            Image(systemName: "arrow.right")
+                .foregroundColor(.black)
+                .offset(x: 220, y: -90)
+                .dynamicTypeSize(.xSmall)
+                .fontWeight(.bold)
+            
+            CustomRingView(accessibilityText: "Exercise ring", background: .green.opacity(0.3), wHeight: 90, completionRate: exerciseRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.green, .accentColor]))
+                .offset(x: 220, y: -25)
+
+                Image(systemName: "arrow.right")
+                    .foregroundColor(.black)
+                    .offset(x: 217, y: -70)
+                    .dynamicTypeSize(.xSmall)
+                    .fontWeight(.bold)
+                Image(systemName: "arrow.right")
+                    .foregroundColor(.black)
+                    .offset(x: 221, y: -70)
+                    .dynamicTypeSize(.xSmall)
+                    .fontWeight(.bold)
+                    
+            CustomRingView(accessibilityText: "Stand ring", background: .teal.opacity(0.3), wHeight: 50, completionRate: standRingProgress/100, ringThickness: 19, colorGradient: Gradient(colors: [.cyan, .teal]))
+                .offset(x: 220, y: -25)
+            
+            Image(systemName: "arrow.up")
+                .foregroundColor(.black)
+                .offset(x: 220, y: -50)
+                .dynamicTypeSize(.xSmall)
+                .fontWeight(.bold)
+        }
+    }
+    
+    var SomeView: some View {
+        VStack(alignment: .leading) {
+            Text("Move")
+                .font(.body)
+                .foregroundColor(.white)
+                .padding(.horizontal, 35)
+                .offset(x: 0, y: -80)
+            HStack {
+                Text("\(Int(moveRingProgress * 3))/\(Int(moveRingProgress * 2))")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.red)
+                Text("KCAL")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.red)
+                    .offset(x: -8, y: 2)
+            }
+            .padding(.horizontal, 40)
+            .offset(x: -5, y: -85)
+            
+            Text("Exercise")
+                .font(.body)
+                .foregroundColor(.white)
+                .padding(.horizontal, 35)
+                .offset(x: 0, y: -80)
+            HStack {
+                Text("\(Int(exerciseRingProgress / 2))/\(Int(exerciseRingProgress / 4))")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.accentColor)
+                Text("MINS")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.accentColor)
+                    .offset(x: -8, y: 2)
+            }
+            .padding(.horizontal, 40)
+            .offset(x: -5, y: -85)
+            
+            Text("Stand")
+                .font(.body)
+                .foregroundColor(.white)
+                .padding(.horizontal, 35)
+                .offset(x: 0, y: -80)
+            HStack {
+                Text("\(Int(standRingProgress / 24))/\(Int(standRingProgress / 48))")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.cyan)
+                Text("HRS")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.cyan)
+                    .offset(x: -8, y: 2)
+            }
+            .padding(.horizontal, 40)
+            .offset(x: -5, y: -85)
+        }
+        .offset(x: 0, y: 50)
+    }
+    
+    var ButtonView: some View {
+
+        NavigationLink {
+            ActivityView(moveRingProgress: moveRingProgress, exerciseRingProgress: exerciseRingProgress, standRingProgress: standRingProgress)
+        } label: {
+            Rectangle()
+                .frame(width: 361, height: 200)
+                .clipped()
+                .cornerRadius(10)
+                .padding()
+                .foregroundStyle(.gray).opacity(0.3)
+                .offset(y: -25)
+        }
     }
     
     var SliderView: some View {
